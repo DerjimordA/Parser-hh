@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background: linear-gradient(45deg, #00ffaa, #aa00ff);
+    background-size: 800% 800%;
+    animation: Gradient 20s ease infinite;
+}
+
+@keyframes Gradient {
+    0% {
+        background-position: 0% 50%
+    }
+    50% {
+        background-position: 100% 50%
+    }
+    100% {
+        background-position: 0% 50%
+    }
+}
+    .star {
+        position: absolute;
+        background: white;
+        width: 4px;
+        height: 4px;
+        border-radius: 80%;
+        opacity: 0;
+        animation: fadeInOut 3s infinite;
+    }
+
+    .twinkle-star {
+        position: absolute;
+        background: white;
+        width: 3px;
+        height: 3px;
+        border-radius: 80%;
+        opacity: 0;
+        animation: fadeInOut 1s infinite;
+    }
+
+    @keyframes fadeInOut {
+        0%, 100% { opacity: 0; }
+        50% { opacity: 1; }
+    }
+</style>
+<script>
+    window.onload = function() {
+        var stars = 150; // number of stars
+        var $stars = document.querySelector('#stars');
+        for (var i = 0; i < stars; i++) {
+            var star = document.createElement('div');
+            star.className = Math.random() > 0.5 ? 'star' : 'twinkle-star';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.left = Math.random() * 100 + '%';
+            $stars.appendChild(star);
+        }
+    }
+</script>
+<div id="stars"></div>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+
+    </nav>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+
+
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+
+
+</body>
+</html>
+

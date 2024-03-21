@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container">
+        <h1 class="text-center my-4">База вакансий</h1>
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#collectVacanciesModal">
+                    Заполнить базу вакансий
+                </button>
+                <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#filterVacanciesModal">
+                    Фильтр вакансий
+                </button>
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#skillsAnalysisModal">
+                    Анализ навыков
+                </button>
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#salaryChartModal">
+                    Анализ зарплат
+                </button>
+                <a href="{% url 'home' %}" class="btn btn-primary">На главную</a>
+                <div class="bg-white shadow rounded" style="width: 120%;">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Название</th>
+                                <th>Зарплата</th>
+                                <th>URL</th>
+                                <th>Навыки</th>
+                                <th>Опыт работы</th>
+                                <th>Вид занятости</th>
+                                <th>График работы</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for vacancy in vacancies %}
+                                <tr>
+                                    <td>{{ vacancy.id }}</td>
+                                    <td>{{ vacancy.name }}</td>
+                                    {% if vacancy.salary %}
+                                           <td>от {{ vacancy.salary.from }} до {{ vacancy.salary.to }} {{ vacancy.salary.currency }}</td>
+                                    {% else %}
+                                           <td>Зарплата не указана</td>
+                                    {% endif %}
+                                    <td><a href="{{ vacancy.url }}">{{ vacancy.url }}</a></td>
+                                    {% if vacancy.skills %}
+                                           <td>{{ vacancy.skills|join:", " }}</td>
+                                    {% else %}
+                                           <td>Навыки не указаны</td>
+                                    {% endif %}
+                                    <td>{{ vacancy.experience }}</td>
+                                    <td>{{ vacancy.employment_type }}</td>
+                                    <td>{{ vacancy.work_schedule }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="collectVacanciesModal" tabindex="-1" role="dialog" aria-labelledby="collectVacanciesModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="collectVacanciesModalLabel">Заполнение базы вакансий</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'collect_vacancies' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            {{ form.search_query.label_tag }}
+                            {{ form.search_query }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.page.label_tag }}
+                            {{ form.page }}
+                        </div>
+                        <div class="form-group">
+                           {{ form.min_salary.label_tag }}
+                           {{ form.min_salary }}
+                      </div>
+                      <div class="form-group">
+                           {{ form.employment_type.label_tag }}
+                           {{ form.employment_type }}
+                      </div>
+                      <div class="form-group">
+                           {{ form.experience.label_tag }}
+                           {{ form.experience }}
+                      </div>
+                        <div class="form-group">
+                           {{ form.work_schedule.label_tag }}
+                           {{ form.work_schedule }}
+                      </div>
+                        <button type="submit" class="btn btn-primary">Заполнить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="filterVacanciesModal" tabindex="-1" role="dialog" aria-labelledby="filterVacanciesModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="filterVacanciesModalLabel">Фильтр вакансий</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'filter_vacancies' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            {{ filter_form.search_query.label_tag }}
+                            {{ filter_form.search_query }}
+                        </div>
+                        <div class="form-group">
+                            {{ filter_form.min_salary.label_tag }}
+                            {{ filter_form.min_salary }}
+                        </div>
+                        <div class="form-group">
+                            {{ filter_form.employment_type.label_tag }}
+                            {{ filter_form.employment_type }}
+                        </div>
+                        <div class="form-group">
+                            {{ filter_form.experience.label_tag }}
+                            {{ filter_form.experience }}
+                        </div>
+                        <div class="form-group">
+                            {{ filter_form.work_schedule.label_tag }}
+                            {{ filter_form.work_schedule }}
+                        </div>
+                        <div class="form-group">
+                            {{ filter_form.skills.label_tag }}
+                            {{ filter_form.skills }}
+                        </div>
+                        <div class="form-group">
+                            {{ filter_form.salary_choice.label_tag }}
+                            {{ filter_form.salary_choice }}
+                        </div>
+                        <button type="submit" class="btn btn-primary">Применить фильтр</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="modal fade" id="skillsAnalysisModal" tabindex="-1" role="dialog" aria-labelledby="skillsAnalysisModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="skillsAnalysisModalLabel">Анализ навыков</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ul>
+                    {% for skill, count in most_common_skills %}
+                        <li>{{ skill }}: {{ count }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="modal fade" id="salaryChartModal" tabindex="-1" role="dialog" aria-labelledby="salaryChartModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="salaryChartModalLabel">Распределение зарплат по количеству вакансий</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {{ plot_div | safe }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+        <script type="text/javascript">
+    $(document).ready(function() {
+        $('#filterVacanciesModal').on('hidden.bs.modal', function () {
+            location.reload();
+        });
+    });
+</script>

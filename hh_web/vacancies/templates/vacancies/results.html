@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center my-4">Результаты поиска</h1>
+    <div class="text-center mb-4">
+        <a href="/" class="btn btn-primary">Вернуться к форме поиска</a>
+        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#skillsModal">
+            Показать анализ навыков
+        </button>
+    </div>
+    <div class="bg-white shadow rounded">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Название вакансии</th>
+                    <th>URL</th>
+                    <th>Зарплата</th>
+                    <th>Необходимые навыки</th>
+                    <th>Опыт работы</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vacancy in vacancies %}
+                    <tr>
+                        <td>{{ vacancy.id }}</td>
+                        <td>{{ vacancy.name }}</td>
+                        <td><a href="{{ vacancy.url }}">Перейти на страницу вакансии</a></td>
+                        {% if vacancy.salary %}
+                            <td>от {{ vacancy.salary.from }} до {{ vacancy.salary.to }} {{ vacancy.salary.currency }}</td>
+                        {% else %}
+                            <td>Зарплата не указана</td>
+                        {% endif %}
+                        {% if vacancy.skills %}
+                            <td>{{ vacancy.skills|join:", " }}</td>
+                        {% else %}
+                            <td>Навыки не указаны</td>
+                        {% endif %}
+                        <td>{{ vacancy.experience }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center mt-4">
+        <a href="/" class="btn btn-primary">Вернуться к форме поиска</a>
+    </div>
+
+    <div class="modal fade" id="skillsModal" tabindex="-1" role="dialog" aria-labelledby="skillsModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="skillsModalLabel">Анализ востребованности навыков</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% for skill, count in skill_counts.items %}
+                        <li>{{ skill }}: {{ count }}</li>
+                    {% endfor %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+
+
